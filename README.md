@@ -1,7 +1,7 @@
 TIMESTAMPER jQuery Plugin.
 ==========================
 
-**About
+### About
 
 Create fuzzy timestamps that auto update as time progresses.
 
@@ -12,7 +12,7 @@ eg:
 	3 hours ago.
 	17:50 Yesterday.
 
-**Setup
+### Setup
 To use this plugin please add jQuery to your site.
 
 This plugin was built using jQuery 1.7.1.
@@ -51,7 +51,7 @@ following to your html head.
 The interval is how often the fuzzy timestamp will update. Change the tag and its selector in
 the jQuery $('tag.class') part.
 
-Full configuration shown below:
+### Full Configuration:
 
 ```html
 <head>
