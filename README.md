@@ -19,7 +19,9 @@ This plugin was built using jQuery 1.7.1.
 
 Usage is simple, Make your timestamps an abbreviation like so:
 
+```html
 <abbr class="timestamper" title="2012-06-30 07:31">2012-06-30 at 07:31</abbr>
+```
 
 The content of the abbr does not matter, use whatever timestamp you like, bearing
 in mind that search engines will cache the content of the page so put a sensible date
@@ -33,6 +35,7 @@ or do something funky if this is not setup correctly.
 You can choose your own selector and change the css class to whatever you like by adding the
 following to your html head.
 
+```html
 <head>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -43,12 +46,14 @@ following to your html head.
 		});
 	</script>
 </head>
+```
 
 The interval is how often the fuzzy timestamp will update. Change the tag and its selector in
 the jQuery $('tag.class') part.
 
 Full configuration shown below:
 
+```html
 <head>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -75,9 +80,4 @@ Full configuration shown below:
 		});
 	</script>
 </head>
-
-
-
-
-
-
+```
