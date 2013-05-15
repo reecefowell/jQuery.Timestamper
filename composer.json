@@ -1,0 +1,14 @@
+{
+    "name": "reecefowell/jQuery-Timestamper",
+    "description": "Create fuzzy timestamps in javascript.",
+    "keywords": ["timestamp", "fuzzy timestamp"],
+    "homepage": "http://github.com/reecefowell/jQuery.Timestamper/",
+    "license": "MIT"
+    "authors": [
+    	{
+    		"name": "Reece Fowell",
+			"email": "reece@codeconsortium.com",
+			"homepage": "http://reecefowell.com"
+    	}
+    ]
+}
