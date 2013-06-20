@@ -1,16 +1,12 @@
-
+<!--
 /*
- * This file is part of the CCDNComponent CommonBundle
- *
  * (c) CCDN (c) CodeConsortium <http://www.codeconsortium.com/> 
  * 
- * Available on github <http://www.github.com/codeconsortium/CommonBundle>
+ * Available on github <http://www.github.com/codeconsortium/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- */
-
-/**
+ *
  * Plugin jQuery.TimeStamper
  *
  * @author Reece Fowell <reece at codeconsortium dot com>
@@ -37,104 +33,97 @@ $(document).ready(function() {
 	// TIMESTAMPER PLUGIN DEFINITION
 	//
 	$.fn.timestamper = function (params) {
-		var iters = [];
+		var timestampers = $([]);
 
 		return this.each(function () {
 			var $this = $(this);
+			
 			var obj = new Timestamper($this, params);
 			setInterval($.proxy(obj.refresh, obj), obj.params.interval);
+			
+			timestampers.push(obj);
 		});
 	};
 
 	//
 	// TIMESTAMPER PUBLIC CLASS DEFINITION
 	//
-	var Timestamper = function (element, params) {
+	function Timestamper(element, params) {
 		this.init('timestamper', element, params)
 	};
+	
+	//
+	// Default values.
+	//
+	Timestamper.prototype.defaults = {
+		interval: 10000,
+		seconds: {
+			inMinute: 60,
+			inHour: (60 * 60),
+			inDay: (60 * 60 * 24),
+			inWeek: (60 * 60 * 24 * 7),
+			inMonth: (60 * 60 * 24 * 7 * 4),
+			inYear: (60 * 60 * 24 * 365)
+		}
+	};
 
-	Timestamper.prototype = {
+	Timestamper.prototype.init = function (type, element, params) {
+		// Setup config.
+		this.params = this.defaults;
+		this.mergeDefaultParams(this.params, params);
 
-		constructor: Timestamper,
+		// Save objects.
+		this.element = element;
 
-		//
-		// Default values.
-		//
-		defaults:  {
-			interval: 10000,
-			seconds: {
-				inMinute: 60,
-				inHour: (60 * 60),
-				inDay: (60 * 60 * 24),
-				inWeek: (60 * 60 * 24 * 7),
-				inMonth: (60 * 60 * 24 * 7 * 4),
-				inYear: (60 * 60 * 24 * 365)
-			}
-		},
+		// Prepare the date object from the timestamp date string.
+		this.ts = new moment.utc($(this.element).attr('title'), "YYYY-MM-DD HH:mm:ss TZ");
 
-		//
-		// Initialise Object.
-		// - Is called from the constructor.
-		//
-		init: function(type, element, params) {
-			// Setup config.
-			this.params = this.defaults;
-			this.mergeDefaultParams(this.params, params);
+		// Initial run.
+		this.refresh();
+	};
 
-			// Save objects.
-			this.element = element;
+	//
+	// Merges optional parameters with defaults.
+	// - Optional params will always overwrite default params.
+	// - Undefined params will be added to the default params.
+	//
+	Timestamper.prototype.mergeDefaultParams = function (defaults, compare) {
+		var self = this;
 
-			// Prepare the date object from the timestamp date string.
-			this.ts = new moment.utc($(this.element).attr('title'), "YYYY-MM-DD HH:mm:ss TZ");
-
-			// Initial run.
-			this.refresh();
-		},
-
-		//
-		// Merges optional parameters with defaults.
-		// - Optional params will always overwrite default params.
-		// - Undefined params will be added to the default params.
-		//
-		mergeDefaultParams: function(defaults, compare) {
-			var self = this;
-
-			$.each(compare, function(key, val) {
-				if ($.isPlainObject(val)) {
-					if (defaults.hasOwnProperty(key)) {
-						self.mergeDefaultParams(defaults[key], val);
-					} else {
-						defaults[key] = val;
-					}
+		$.each(compare, function(key, val) {
+			if ($.isPlainObject(val)) {
+				if (defaults.hasOwnProperty(key)) {
+					self.mergeDefaultParams(defaults[key], val);
 				} else {
-					if (defaults.hasOwnProperty(key)) {
-						defaults[key] = val;
-					}
+					defaults[key] = val;
 				}
-			});
-		},
+			} else {
+				if (defaults.hasOwnProperty(key)) {
+					defaults[key] = val;
+				}
+			}
+		});
+	};
 
-		//
-		// Gets the new time message and sets the text value
-		// of the element to the new timestamp message.
-		//
-		refresh: function() {
-			var nw = new moment();
-			var self = this;
+	//
+	// Gets the new time message and sets the text value
+	// of the element to the new timestamp message.
+	//
+	Timestamper.prototype.refresh = function () {
+		var nw = new moment();
+		var self = this;
 
-			var message = function() {
-				if (nw.diff(self.ts, 'seconds') < 60) { return self.ts.fromNow(); }
-				if (nw.diff(self.ts, 'minutes') < 60) { return self.ts.fromNow(); }
-				if (nw.diff(self.ts, 'hours') < 24) { return self.ts.fromNow(); }
-				if (nw.diff(self.ts, 'days') < 7) { return self.ts.fromNow() + self.ts.format(' HH:mm'); }
-				if (nw.diff(self.ts, 'weeks') < 4) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
-				if (nw.diff(self.ts, 'months') < 12) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
-				if (nw.diff(self.ts, 'years') < 1) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
-			};
+		var message = function() {
+			if (nw.diff(self.ts, 'seconds') < 60) { return self.ts.fromNow(); }
+			if (nw.diff(self.ts, 'minutes') < 60) { return self.ts.fromNow(); }
+			if (nw.diff(self.ts, 'hours') < 24) { return self.ts.fromNow(); }
+			if (nw.diff(self.ts, 'days') < 7) { return self.ts.fromNow() + self.ts.format(' HH:mm'); }
+			if (nw.diff(self.ts, 'weeks') < 4) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
+			if (nw.diff(self.ts, 'months') < 12) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
+			if (nw.diff(self.ts, 'years') < 1) { return self.ts.format('YYYY-MM-DD HH:mm:ss'); }
+		};
 
-			$(this.element).text(message());
-		},
-
+		$(this.element).text(message());
 	};
 
 }(window.jQuery);
